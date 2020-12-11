@@ -16,7 +16,7 @@ protected:
     }  
 };
 
-TEST_F(SkipListTest, tese_skiplist) {
+TEST_F(SkipListTest, test_skiplist) {
     sun::data_structure::skiplist<int, std::string> list;
     ASSERT_EQ(list.size(), 0);
 
@@ -70,7 +70,7 @@ TEST_F(SkipListTest, tese_skiplist) {
     // update key
     list.insert(1,"yi");
     
-    // check if udpdate key
+    // check if update key
     ASSERT_TRUE(list.search(1, &res));
     ASSERT_EQ(res, "yi");
     
@@ -88,6 +88,121 @@ TEST_F(SkipListTest, tese_skiplist) {
     ASSERT_EQ(res, "six");
     ASSERT_FALSE(list.erase(6, &res));
     ASSERT_EQ(list.size(), 2);
+
+    // check clear
+    list.clear();
+    ASSERT_EQ(list.size(), 0);
+}
+
+TEST_F(SkipListTest, test_skiplist_copyable) {
+    sun::data_structure::skiplist<int, std::string> list;
+    
+    ASSERT_EQ(list.size(), 0);
+    std::pair<int, std::string> sets[]= {
+        {1,"one"},
+        {2, "two"},
+        {5, "five"},
+        {10, "ten"}
+    };
+
+    // insert nodes
+    for (int i = 0; i < 4; ++i) {
+        list.insert(sets[i].first, sets[i].second);
+    }
+
+    sun::data_structure::skiplist<int, std::string> list2(list);
+    // check list size
+    ASSERT_EQ(list2.size(), 4);
+    
+    // skiplist is a sorted set
+    sort(sets, sets + 4);
+    
+    // check for_each
+    unsigned check_index = 0;
+    auto check_func = [&check_index, &sets](int* key, std::string* value) {
+        ASSERT_EQ(*key, sets[check_index].first);
+        ASSERT_EQ(*value, sets[check_index].second);
+        ++check_index;
+    };
+    list2.for_each(check_func);
+    ASSERT_EQ(check_index, list2.size());
+}
+
+TEST_F(SkipListTest, test_skiplist_assignable) {
+    sun::data_structure::skiplist<int, std::string> list;
+    
+    ASSERT_EQ(list.size(), 0);
+    std::pair<int, std::string> sets[]= {
+        {1,"one"},
+        {2, "two"},
+        {5, "five"},
+        {10, "ten"}
+    };
+
+    // insert nodes
+    for (int i = 0; i < 4; ++i) {
+        list.insert(sets[i].first, sets[i].second);
+    }
+
+    sun::data_structure::skiplist<int, std::string> list2(list);
+    // check list size
+    ASSERT_EQ(list2.size(), 4);
+    
+    // skiplist is a sorted set
+    sort(sets, sets + 4);
+    
+    // check for_each
+    unsigned check_index = 0;
+    auto check_func = [&check_index, &sets](int* key, std::string* value) {
+        ASSERT_EQ(*key, sets[check_index].first);
+        ASSERT_EQ(*value, sets[check_index].second);
+        ++check_index;
+    };
+    list2.for_each(check_func);
+    ASSERT_EQ(check_index, list2.size());
+
+    sun::data_structure::skiplist<int, std::string> list3;
+    list3 = list2;
+    // check for_each reverse
+    check_index = list3.size() - 1;
+    auto check_func_reverse = [&check_index, &sets](int* key, std::string* value) {
+        ASSERT_EQ(*key, sets[check_index].first);
+        ASSERT_EQ(*value, sets[check_index].second);
+        --check_index;
+    };
+    list3.for_each(check_func_reverse, true);
+    ASSERT_EQ(check_index, -1);
+
+    // update key
+    list.insert(1,"yi");
+    std::string res;
+    // check if update key
+    ASSERT_TRUE(list.search(1, &res));
+    ASSERT_EQ(res, "yi");
+    ASSERT_TRUE(list2.search(1, &res));
+    ASSERT_EQ(res, "one");
+    ASSERT_TRUE(list3.search(1, &res));
+    ASSERT_EQ(res, "one");
+
+    // update key
+    list2.insert(2,"er");
+    // check if update key
+    ASSERT_TRUE(list.search(2, &res));
+    ASSERT_EQ(res, "two");
+    ASSERT_TRUE(list2.search(2, &res));
+    ASSERT_EQ(res, "er");
+    ASSERT_TRUE(list3.search(2, &res));
+    ASSERT_EQ(res, "two");
+
+    // update key
+    list3.insert(5,"wu");
+    // check if update key
+    ASSERT_TRUE(list.search(5, &res));
+    ASSERT_EQ(res, "five");
+    ASSERT_TRUE(list2.search(5, &res));
+    ASSERT_EQ(res, "five");
+    ASSERT_TRUE(list3.search(5, &res));
+    ASSERT_EQ(res, "wu");
 }
 
 int main(int argc, char ** argv) {
