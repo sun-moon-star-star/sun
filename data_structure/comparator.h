@@ -26,7 +26,7 @@ struct less {
 template <typename T>
 struct greater {
     bool operator()(const T& x, const T& y) const {
-        return !(x < y);
+        return y < x;
     }
 };
 
