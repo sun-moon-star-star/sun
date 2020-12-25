@@ -11,12 +11,13 @@ namespace sun {
 namespace util {
 
 template <typename StructType, typename FieldType, FieldType StructType::*sign>
-void update_struct_member_field(StructType* const obj, StructType const* const value) {
-    obj->*sign = value->*sign;
+void update_struct_member_field(StructType* const obj,
+                                StructType const* const value) {
+  obj->*sign = value->*sign;
 }
 
-} // namespace util
+}  // namespace util
 
-} // namespace sun
+}  // namespace sun
 
-#endif // SUN_UTIL_STRUCT_H_
+#endif  // SUN_UTIL_STRUCT_H_

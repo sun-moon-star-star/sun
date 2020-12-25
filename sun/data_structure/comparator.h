@@ -15,9 +15,7 @@ namespace data_structure {
  */
 template <typename T>
 struct less {
-    bool operator()(const T& x, const T& y) const {
-        return x < y;
-    }
+  bool operator()(const T& x, const T& y) const { return x < y; }
 };
 
 /**
@@ -25,13 +23,11 @@ struct less {
  */
 template <typename T>
 struct greater {
-    bool operator()(const T& x, const T& y) const {
-        return y < x;
-    }
+  bool operator()(const T& x, const T& y) const { return y < x; }
 };
 
-} // namespace data_structure
+}  // namespace data_structure
 
-} // namespace sun
+}  // namespace sun
 
-#endif // SUN_DATA_STRUCTURE_COMPARATOR_H_
+#endif  // SUN_DATA_STRUCTURE_COMPARATOR_H_

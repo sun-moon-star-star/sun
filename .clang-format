@@ -1,0 +1,18 @@
+BasedOnStyle: Google
+
+ColumnLimit: 80
+
+AlwaysBreakTemplateDeclarations: true
+
+DerivePointerAlignment: false
+PointerAlignment: Left
+
+IncludeCategories:
+- Regex: '^\"sun/'  # project includes should sort first
+  Priority: 500
+- Regex: '^\"'
+  Priority: 1000
+- Regex: '^<[^/]*>'
+  Priority: 1500
+- Regex: '^<.*/.*'
+  Priority: 2000
