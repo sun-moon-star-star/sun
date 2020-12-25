@@ -68,8 +68,8 @@ class b_plus_tree {
     return *this;
   }
 
-    // todo
-    virtual ~b_plus_tree() {}
+  // todo
+  virtual ~b_plus_tree() {}
 
   private:
   bool equal(const KeyType& x, const KeyType& y) {
@@ -347,6 +347,8 @@ class b_plus_tree {
 
     if (fa[fa_len - 1]->num < m) {
       leaf_node* new_node = split_node_unit<leaf_node>(leaf, fa[fa_len - 1], fa_idx[fa_len - 1]]);
+      new_node->nxt = leaf->nxt;
+      leaf->nxt = new_node;
       return insert(key, value);
     }
 
