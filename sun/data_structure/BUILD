@@ -42,11 +42,3 @@ cc_test(
         ":skiplist",
     ],
 )
-
-cc_library(
-    name = "b_plus_tree",
-    hdrs = ["b_plus_tree.h"],
-    deps = [
-        ":comparator",
-    ],
-)

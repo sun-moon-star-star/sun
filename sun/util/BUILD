@@ -28,3 +28,11 @@ cc_library(
     name = "hash",
     hdrs = ["hash.h"],
 )
+
+cc_test(
+    name = "hash_test",
+    srcs = ["hash_test.cc"],
+    deps = [
+        ":hash",
+    ],
+)

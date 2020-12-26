@@ -75,7 +75,8 @@
         "variant": "cpp",
         "__memory": "cpp",
         "cassert": "cpp",
-        "__functional_base_03": "cpp"
+        "__functional_base_03": "cpp",
+        "memory_resource": "cpp"
     },
     "editor.formatOnType": true,
     "editor.formatOnSave": true
