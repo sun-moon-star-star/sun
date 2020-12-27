@@ -114,6 +114,31 @@ TEST_F(HashTest, test_struct_array) {
   ASSERT_EQ(hash_code(array), hash_code(array2));
 }
 
+TEST_F(HashTest, test_struct_not_define_hash_code) {
+  char buffer[1024] = {0};
+  char buffer2[1024] = {0};
+  memset(buffer2, 0xff, sizeof(buffer2));
+
+  struct lu {
+    int i;
+    long long k;
+  };
+  lu* x = new (buffer) lu{1, 2};
+  lu* y = new (buffer2) lu{1, 2};
+  ASSERT_NE(hash_code(x), hash_code(y));
+
+  struct zhao {
+    int i, j;
+    long long k;
+  } x2{1, 2, 3}, y2{1, 2, 3}, z2{3, 2, 1};
+  ASSERT_EQ(hash_code(x2), hash_code(y2));
+  ASSERT_NE(hash_code(x2), hash_code(z2));
+
+  zhao* x3 = new (buffer) zhao{1, 2, 3};
+  zhao* y3 = new (buffer) zhao{1, 2, 3};
+  ASSERT_EQ(hash_code(x3), hash_code(y3));
+}
+
 int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

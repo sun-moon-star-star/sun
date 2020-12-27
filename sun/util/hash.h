@@ -68,14 +68,17 @@ const uint64_t HASH_FACTOR = 11131;
 }  // namespace __1
 
 /**
- * @brief hash_code 默认取地址
+ * @brief hash_code 默认按字节累加
  */
 template <typename T, typename V = void>
 struct hash_code_helper {
   hash_code_helper(T&& t) {
-    __1::ptr_getter getter;
-    getter.ptr = &t;
-    code = getter.code;
+    uint64_t len = sizeof(t);
+    const uint8_t* ptr = reinterpret_cast<const uint8_t*>(&t);
+    code = 0;
+    for (uint64_t i = 0; i < len; ++i, ++ptr) {
+      code = code * __1::HASH_FACTOR + (*ptr);
+    };
   }
   uint64_t get() const { return code; }
 
