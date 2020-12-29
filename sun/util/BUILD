@@ -36,3 +36,17 @@ cc_test(
         ":hash",
     ],
 )
+
+cc_library(
+    name = "json",
+    hdrs = ["json.h"],
+    linkopts = ["-ljsoncpp"],
+)
+
+cc_test(
+    name = "json_test",
+    srcs = ["json_test.cc"],
+    deps = [
+        ":json",
+    ],
+)
