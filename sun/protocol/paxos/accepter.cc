@@ -5,41 +5,59 @@
 
 #include "sun/protocol/paxos/accepter.h"
 
+#include "sun/util/common.h"
+
 namespace sun::protocol::paxos {
 
-outcome_ptr accepter::prepare(proposal_sign_ptr proposal) {
-  const uint64_t proposal_id = proposal->id;
-  const uint64_t proposal_new_value = proposal->value;
-  uint64_t proposal_old_value = this->get_proposal_value(proposal_id);
+outcome_ptr accepter::prepare(proposal_sign_ptr proposal_sign) {
+  const uint64_t proposal_id = proposal_sign->id;
+  const uint64_t proposal_new_value = proposal_sign->value;
+  uint64_t promise_value = this->get_proposal_value(proposal_id);
+  uint64_t hashcode = 0;
+  uint64_t accept_value = 0;
+  error code;
 
-  accepter_code code;
-  if (proposal_old_value < proposal_new_value) {
-    set_proposal_value(proposal_id, proposal_new_value);
-    proposal_old_value = proposal_new_value;
-    code = code::accepter::promise;
-  } else {
-    code = code::accepter::obsolete;
+  if (promise_value) {
+    proposal_ptr proposal = get_proposal(proposal_id);
+    hashcode = proposal->hashcode;
+    accept_value = proposal->value;
   }
 
-  return create_outcome(proposal_id, proposal_new_value, proposal_old_value,
-                        code);
+  if (promise_value < proposal_new_value) {
+    set_proposal_value(proposal_id, proposal_new_value);
+    promise_value = proposal_new_value;
+    code = code::success;
+  } else {
+    code = code::failure;
+  }
+
+  return create_outcome(proposal_id, proposal_new_value, promise_value,
+                        accept_value, hashcode, code);
 }
 
 outcome_ptr accepter::accept(proposal_ptr proposal) {
   const uint64_t proposal_id = proposal->id;
   const uint64_t proposal_new_value = proposal->value;
-  uint64_t proposal_old_value = this->get_proposal_value(proposal_id);
+  uint64_t promise_value = this->get_proposal_value(proposal_id);
+  uint64_t hashcode = 0;
+  error code;
 
-  accepter_code code;
-  if (proposal_old_value == proposal_new_value) {
-    save_proposal(proposal);
-    code = code::accepter::accept;
-  } else {
-    code = code::accepter::update;
+  if (promise_value) {
+    hashcode = get_proposal(proposal_id)->hashcode;
   }
 
-  return create_outcome(proposal_id, proposal_new_value, proposal_old_value,
-                        code);
+  if (promise_value <= proposal_new_value) {
+    if (promise_value != proposal_new_value) {
+      set_proposal_value(proposal_id, proposal_new_value);
+    }
+    save_proposal(proposal);
+    code = code::success;
+  } else {
+    code = code::failure;
+  }
+
+  return create_outcome(proposal_id, proposal_new_value, proposal_new_value,
+                        proposal_new_value, hashcode, code);
 }
 
 void accepter::save_proposal(proposal_ptr proposal) {
@@ -49,14 +67,6 @@ void accepter::save_proposal(proposal_ptr proposal) {
 void accepter::set_proposal_value(uint64_t proposal_id,
                                   uint64_t proposal_value) {
   _proposal_signs[proposal_id] = proposal_value;
-}
-
-proposal_ptr accepter::get_proposal(uint64_t proposal_id) {
-  auto it = _proposals.find(proposal_id);
-  if (it == _proposals.end()) {
-    return nullptr;
-  }
-  return it->second;
 }
 
 // 协议不存在返回0
@@ -69,9 +79,8 @@ uint64_t accepter::get_proposal_value(uint64_t proposal_id) {
 }
 
 accepter_ptr create_accepter() {
-  // todo(random)
-  static uint64_t global_accepter_id = 0;
-  return accepter_ptr(new accepter(++global_accepter_id));
+  const uint64_t accepter_id = sun::util::common::random::random<uint64_t>();
+  return accepter_ptr(new accepter(accepter_id));
 }
 
 }  // namespace sun::protocol::paxos

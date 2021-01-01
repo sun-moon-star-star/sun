@@ -36,6 +36,7 @@ proposal_sign_ptr create_proposal_sign(const uint64_t& id,
  * @note 在accept阶段，proposal向accepter发送请求时携带的数据
  */
 struct proposal : public proposal_sign {
+  uint64_t hashcode;   // 标识数据的唯一性
   const uint64_t len;  // 提议携带的数据的长度
   char buffer[];       // 提议携带的数据
 
@@ -53,10 +54,12 @@ proposal_ptr create_proposal(const uint64_t& id, const uint64_t& value,
  * @note 在prepare/accept阶段，accepter向proposal告知本协议是否被接受
  */
 struct outcome {
-  uint64_t id;              // 提议的针对对象
-  uint64_t value;           // 提议提出的值
-  uint64_t accepter_value;  // accepter目前保证的value
-  const accepter_code code;
+  uint64_t id;                 // 提议的针对对象
+  uint64_t value;              // 提议提出的值
+  uint64_t promise_value;      // accepter目前已被设置的value
+  uint64_t accept_value;       // accepter目前保证的value
+  uint64_t accept_hashcode;  // accepter目前保证的value对应的hashcode
+  const error code;
 
   NO_CREATABLE(outcome);
 };
@@ -64,8 +67,10 @@ struct outcome {
 using outcome_ptr = std::shared_ptr<outcome>;
 
 outcome_ptr create_outcome(const uint64_t& id, const uint64_t& value,
-                           const uint64_t& accepter_value,
-                           const accepter_code& code);
+                           const uint64_t& promise_value,
+                           const uint64_t& commit_value,
+                           const uint64_t& accept_hashcode,
+                           const error& code);
 
 }  // namespace sun::protocol::paxos
 

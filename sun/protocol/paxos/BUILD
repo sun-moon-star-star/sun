@@ -3,6 +3,12 @@ cc_library(
     hdrs = ["code.h"],
 )
 
+
+cc_library(
+    name = "config",
+    hdrs = ["config.h"],
+)
+
 cc_library(
     name = "struct",
     hdrs = ["struct.h"],
@@ -34,6 +40,17 @@ cc_test(
     name = "accepter_test",
     srcs = ["accepter_test.cc"],
     deps = [
+        ":accepter",
+    ],
+)
+
+cc_library(
+    name = "proposer",
+    hdrs = ["proposer.h"],
+    srcs = ["proposer.cc"],
+    deps = [
+        ":config",
+        ":struct",
         ":accepter",
     ],
 )

@@ -24,14 +24,14 @@ class accepter {
 
   outcome_ptr accept(proposal_ptr proposal);
 
+  proposal_ptr get_proposal(uint64_t proposal_id);
+
  private:
   void save_proposal(proposal_ptr proposal);
 
   void set_proposal_value(uint64_t proposal_id, uint64_t proposal_value);
 
-  proposal_ptr get_proposal(uint64_t proposal_id);
-
-  // 协议不存在返回0
+    // 协议不存在返回0
   uint64_t get_proposal_value(uint64_t proposal_id);
 
  private:

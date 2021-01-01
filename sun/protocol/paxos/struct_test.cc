@@ -31,15 +31,17 @@ TEST_F(StructTest, test_proposal) {
 
 TEST_F(StructTest, test_outcome) {
   sun::protocol::paxos::outcome_ptr outcome =
-      sun::protocol::paxos::create_outcome(
-          123456789llu, 1234llu, 1235llu,
-          sun::protocol::paxos::code::accepter::promise);
+      sun::protocol::paxos::create_outcome(123456789llu, 1234llu, 1235llu,
+                                           1235llu, 8765llu,
+                                           sun::protocol::paxos::code::success);
   ASSERT_NE(outcome, nullptr);
 
   ASSERT_EQ(outcome->id, 123456789llu);
   ASSERT_EQ(outcome->value, 1234llu);
-  ASSERT_EQ(outcome->accepter_value, 1235llu);
-  ASSERT_EQ(outcome->code, sun::protocol::paxos::code::accepter::promise);
+  ASSERT_EQ(outcome->promise_value, 1235llu);
+  ASSERT_EQ(outcome->accept_value, 1235llu);
+  ASSERT_EQ(outcome->accept_hashcode, 8765llu);
+  ASSERT_EQ(outcome->code, sun::protocol::paxos::code::success);
 }
 
 int main(int argc, char** argv) {

@@ -5,6 +5,8 @@
 
 #include "sun/protocol/paxos/struct.h"
 
+#include "sun/util/common.h"
+
 namespace sun::protocol::paxos {
 
 proposal_sign_ptr create_proposal_sign(const uint64_t& id,
@@ -26,6 +28,7 @@ proposal_ptr create_proposal(const uint64_t& id, const uint64_t& value,
   uint64_t* ptr_ui64 = reinterpret_cast<uint64_t*>(ptr);
   *ptr_ui64 = id;
   *(++ptr_ui64) = value;
+  *(++ptr_ui64) = sun::util::common::random::random<uint64_t>();
   *(++ptr_ui64) = len;
 
   return proposal_ptr(reinterpret_cast<proposal*>(ptr),
@@ -33,16 +36,19 @@ proposal_ptr create_proposal(const uint64_t& id, const uint64_t& value,
 }
 
 outcome_ptr create_outcome(const uint64_t& id, const uint64_t& value,
-                           const uint64_t& accepter_value,
-                           const accepter_code& code) {
+                           const uint64_t& promise_value,
+                           const uint64_t& accept_value,
+                           const uint64_t& accept_hashcode, const error& code) {
   void* ptr = malloc(sizeof(outcome));
 
   uint64_t* ptr_ui64 = reinterpret_cast<uint64_t*>(ptr);
   *(ptr_ui64) = id;
   *(++ptr_ui64) = value;
-  *(++ptr_ui64) = accepter_value;
+  *(++ptr_ui64) = promise_value;
+  *(++ptr_ui64) = accept_value;
+  *(++ptr_ui64) = accept_hashcode;
 
-  accepter_code* ptr_code = reinterpret_cast<accepter_code*>(++ptr_ui64);
+  error* ptr_code = reinterpret_cast<error*>(++ptr_ui64);
   *ptr_code = code;
 
   return outcome_ptr(reinterpret_cast<outcome*>(ptr),
