@@ -1,12 +1,39 @@
 cc_library(
-    name = "proposal",
-    hdrs = ["proposal.h"],
+    name = "code",
+    hdrs = ["code.h"],
+)
+
+cc_library(
+    name = "struct",
+    hdrs = ["struct.h"],
+    srcs = ["struct.cc"],
+    deps = [
+        ":code",
+        "//sun/util:common",
+    ],
 )
 
 cc_test(
-    name = "proposal_test",
-    srcs = ["proposal_test.cc"],
+    name = "struct_test",
+    srcs = ["struct_test.cc"],
     deps = [
-        ":proposal",
+        ":struct",
+    ],
+)
+
+cc_library(
+    name = "accepter",
+    hdrs = ["accepter.h"],
+    srcs = ["accepter.cc"],
+    deps = [
+        ":struct",
+    ],
+)
+
+cc_test(
+    name = "accepter_test",
+    srcs = ["accepter_test.cc"],
+    deps = [
+        ":accepter",
     ],
 )
