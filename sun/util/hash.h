@@ -206,6 +206,11 @@ uint64_t hash_code(const char* const ptr) {
   return code;
 }
 
+template <typename T>
+struct hasher {
+  uint64_t operator()(const T& t) { return hash_code(t); }
+};  // hasher
+
 }  // namespace sun::util
 
 #endif  // SUN_UTIL_HASH_H_

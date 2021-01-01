@@ -25,6 +25,9 @@
   class(const class&) = delete; \
   class& operator=(const class&) = delete;
 
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+
 namespace sun::util::common::random {
 
 std::default_random_engine default_random_engine;
