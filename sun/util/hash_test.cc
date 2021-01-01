@@ -82,7 +82,7 @@ struct sun::util::hash_code_helper<
            std::is_same_v<A, std::remove_cv_t<std::remove_reference_t<T>>>>> {
   hash_code_helper(T&& t) : code(t.hash_code()) {}
 
-  uint64_t get() const { return code; }
+  uint64_t operator()() const { return code; }
 
  private:
   uint64_t code;

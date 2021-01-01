@@ -80,7 +80,7 @@ struct hash_code_helper {
       code = code * __1::HASH_FACTOR + (*ptr);
     };
   }
-  uint64_t get() const { return code; }
+  uint64_t operator()() const { return code; }
 
  private:
   uint64_t code;
@@ -99,7 +99,7 @@ struct hash_code_helper<
                       getter.ptr));
   }
 
-  code_type get() const { return code; }
+  code_type operator()() const { return code; }
 
  private:
   code_type code;
@@ -112,11 +112,11 @@ struct hash_code_helper<T (&)[N]> {
   hash_code_helper(T (&t)[N]) {
     code = 0;
     for (std::size_t i = 0; i < N; ++i) {
-      code = code * __1::HASH_FACTOR + hash_code_helper<T&>(t[i]).get();
+      code = code * __1::HASH_FACTOR + hash_code_helper<T&>(t[i])();
     }
   }
 
-  code_type get() const { return code; }
+  code_type operator()() const { return code; }
 
  private:
   code_type code;
@@ -129,12 +129,11 @@ struct hash_code_helper<T(&&)[N]> {
   hash_code_helper(T(&&t)[N]) {
     code = 0;
     for (std::size_t i = 0; i < N; ++i) {
-      code = code * __1::HASH_FACTOR +
-             hash_code_helper<T&&>(std::move(t[i])).get();
+      code = code * __1::HASH_FACTOR + hash_code_helper<T&&>(std::move(t[i]))();
     }
   }
 
-  code_type get() const { return code; }
+  code_type operator()() const { return code; }
 
  private:
   code_type code;
@@ -147,11 +146,11 @@ struct hash_code_helper<char (&)[N]> {
   hash_code_helper(char (&t)[N]) {
     code = 0;
     for (std::size_t i = 0; t[i] != '\0'; ++i) {
-      code = code * __1::HASH_FACTOR + hash_code_helper<char&>(t[i]).get();
+      code = code * __1::HASH_FACTOR + hash_code_helper<char&>(t[i])();
     }
   }
 
-  code_type get() const { return code; }
+  code_type operator()() const { return code; }
 
  private:
   code_type code;
@@ -164,12 +163,12 @@ struct hash_code_helper<char(&&)[N]> {
   hash_code_helper(char(&&t)[N]) {
     code = 0;
     for (std::size_t i = 0; t[i] != '\0'; ++i) {
-      code = code * __1::HASH_FACTOR +
-             hash_code_helper<char&&>(std::move(t[i])).get();
+      code =
+          code * __1::HASH_FACTOR + hash_code_helper<char&&>(std::move(t[i]))();
     }
   }
 
-  code_type get() const { return code; }
+  code_type operator()() const { return code; }
 
  private:
   code_type code;
@@ -184,12 +183,11 @@ struct hash_code_helper<
   hash_code_helper(T&& t) {
     code = 0;
     for (std::size_t i = 0; t[i] != '\0'; ++i) {
-      code =
-          code * __1::HASH_FACTOR + hash_code_helper<const char&>(t[i]).get();
+      code = code * __1::HASH_FACTOR + hash_code_helper<const char&>(t[i])();
     }
   }
 
-  code_type get() const { return code; }
+  code_type operator()() const { return code; }
 
  private:
   code_type code;
@@ -197,7 +195,7 @@ struct hash_code_helper<
 
 template <typename T>
 decltype(auto) hash_code(T&& t) {
-  return hash_code_helper<T&&>(std::forward<T>(t)).get();
+  return hash_code_helper<T&&>(std::forward<T>(t))();
 }
 
 uint64_t hash_code(const char* const ptr) {
