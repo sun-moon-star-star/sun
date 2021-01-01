@@ -1,3 +1,5 @@
+package(default_visibility = ["//visibility:public"])
+
 cc_library(
     name = "common",
     hdrs = ["common.h"],
@@ -34,19 +36,5 @@ cc_test(
     srcs = ["hash_test.cc"],
     deps = [
         ":hash",
-    ],
-)
-
-cc_library(
-    name = "json",
-    hdrs = ["json.h"],
-    linkopts = ["-ljsoncpp"],
-)
-
-cc_test(
-    name = "json_test",
-    srcs = ["json_test.cc"],
-    deps = [
-        ":json",
     ],
 )

@@ -32,6 +32,7 @@ cc_library(
     hdrs = ["skiplist.h"],
     deps = [
         ":comparator",
+        "//sun/util:common",
     ],
 )
 

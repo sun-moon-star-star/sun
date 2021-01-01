@@ -7,11 +7,10 @@
 #define SUN_DATA_STRUCTURE_SKIPLIST_H_
 
 #include "sun/data_structure/comparator.h"  // sun::data_structure::less
+#include "sun/util/common.h"
 
 #include <cstdint>
-#include <ctime>
 #include <functional>
-#include <random>
 
 namespace sun {
 
@@ -20,14 +19,15 @@ namespace data_structure {
 namespace skiplist_space {
 
 const uint32_t MAX_LEVEL = 64;
-std::default_random_engine default_random_engine;
-std::uniform_int_distribution<uint32_t> random_getter(0, 1);
 
-void init_random_engine_with_time() { default_random_engine.seed(time(NULL)); }
+void init_random_engine_with_time() {
+  ::sun::util::common::random::init_random_engine_with_time();
+}
 
 uint32_t random_level() {
   uint32_t level = 1;
-  while (level < MAX_LEVEL && random_getter(default_random_engine) == 1) {
+  while (level < MAX_LEVEL &&
+         (::sun::util::common::random::random<>() & 1) == 1) {
     ++level;
   }
   return level;
