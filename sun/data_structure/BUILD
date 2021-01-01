@@ -43,3 +43,20 @@ cc_test(
         ":skiplist",
     ],
 )
+
+cc_library(
+    name = "hash_table",
+    hdrs = ["hash_table.h"],
+    deps = [
+        "//sun/util:common",
+        "//sun/util:hash",
+    ],
+)
+
+cc_test(
+    name = "hash_table_test",
+    srcs = ["hash_table_test.cc"],
+    deps = [
+        ":hash_table",
+    ],
+)
