@@ -12,7 +12,7 @@
 
 namespace sun::util {
 
-namespace __1 {
+namespace __hash {
 
 template <typename T, uint8_t bytes = sizeof(T)>
 struct get_bytes {
@@ -65,7 +65,7 @@ union ptr_getter {
 
 const uint64_t HASH_FACTOR = 11131;
 
-}  // namespace __1
+}  // namespace __hash
 
 /**
  * @brief hash_code 默认按字节累加
@@ -77,7 +77,7 @@ struct hash_code_helper {
     const uint8_t* ptr = reinterpret_cast<const uint8_t*>(&t);
     code = 0;
     for (uint64_t i = 0; i < len; ++i, ++ptr) {
-      code = code * __1::HASH_FACTOR + (*ptr);
+      code = code * __hash::HASH_FACTOR + (*ptr);
     };
   }
   uint64_t operator()() const { return code; }
@@ -90,13 +90,14 @@ template <typename T>
 struct hash_code_helper<
     T, std::enable_if_t<std::is_integral_v<std::remove_reference_t<T>> ||
                         std::is_floating_point_v<std::remove_reference_t<T>>>> {
-  typedef typename __1::get_hash_code_len<T>::type code_type;
+  typedef typename __hash::get_hash_code_len<T>::type code_type;
 
   hash_code_helper(T&& t) {
-    __1::ptr_getter getter;
+    __hash::ptr_getter getter;
     getter.ptr = &t;
-    code = 1llu * (*reinterpret_cast<const typename __1::get_bytes<T>::type*>(
-                      getter.ptr));
+    code =
+        1llu * (*reinterpret_cast<const typename __hash::get_bytes<T>::type*>(
+                   getter.ptr));
   }
 
   code_type operator()() const { return code; }
@@ -107,12 +108,12 @@ struct hash_code_helper<
 
 template <typename T, std::size_t N>
 struct hash_code_helper<T (&)[N]> {
-  typedef typename __1::get_hash_code_len<T>::type code_type;
+  typedef typename __hash::get_hash_code_len<T>::type code_type;
 
   hash_code_helper(T (&t)[N]) {
     code = 0;
     for (std::size_t i = 0; i < N; ++i) {
-      code = code * __1::HASH_FACTOR + hash_code_helper<T&>(t[i])();
+      code = code * __hash::HASH_FACTOR + hash_code_helper<T&>(t[i])();
     }
   }
 
@@ -124,12 +125,13 @@ struct hash_code_helper<T (&)[N]> {
 
 template <typename T, std::size_t N>
 struct hash_code_helper<T(&&)[N]> {
-  typedef typename __1::get_hash_code_len<T>::type code_type;
+  typedef typename __hash::get_hash_code_len<T>::type code_type;
 
   hash_code_helper(T(&&t)[N]) {
     code = 0;
     for (std::size_t i = 0; i < N; ++i) {
-      code = code * __1::HASH_FACTOR + hash_code_helper<T&&>(std::move(t[i]))();
+      code =
+          code * __hash::HASH_FACTOR + hash_code_helper<T&&>(std::move(t[i]))();
     }
   }
 
@@ -141,12 +143,12 @@ struct hash_code_helper<T(&&)[N]> {
 
 template <std::size_t N>
 struct hash_code_helper<char (&)[N]> {
-  typedef typename __1::get_hash_code_len<char>::type code_type;
+  typedef typename __hash::get_hash_code_len<char>::type code_type;
 
   hash_code_helper(char (&t)[N]) {
     code = 0;
     for (std::size_t i = 0; t[i] != '\0'; ++i) {
-      code = code * __1::HASH_FACTOR + hash_code_helper<char&>(t[i])();
+      code = code * __hash::HASH_FACTOR + hash_code_helper<char&>(t[i])();
     }
   }
 
@@ -158,13 +160,13 @@ struct hash_code_helper<char (&)[N]> {
 
 template <std::size_t N>
 struct hash_code_helper<char(&&)[N]> {
-  typedef typename __1::get_hash_code_len<char>::type code_type;
+  typedef typename __hash::get_hash_code_len<char>::type code_type;
 
   hash_code_helper(char(&&t)[N]) {
     code = 0;
     for (std::size_t i = 0; t[i] != '\0'; ++i) {
-      code =
-          code * __1::HASH_FACTOR + hash_code_helper<char&&>(std::move(t[i]))();
+      code = code * __hash::HASH_FACTOR +
+             hash_code_helper<char&&>(std::move(t[i]))();
     }
   }
 
@@ -178,12 +180,12 @@ template <typename T>
 struct hash_code_helper<
     T, std::enable_if_t<std::is_same_v<
            std::string, std::remove_cv_t<std::remove_reference_t<T>>>>> {
-  typedef typename __1::get_hash_code_len<char>::type code_type;
+  typedef typename __hash::get_hash_code_len<char>::type code_type;
 
   hash_code_helper(T&& t) {
     code = 0;
     for (std::size_t i = 0; t[i] != '\0'; ++i) {
-      code = code * __1::HASH_FACTOR + hash_code_helper<const char&>(t[i])();
+      code = code * __hash::HASH_FACTOR + hash_code_helper<const char&>(t[i])();
     }
   }
 
@@ -201,7 +203,7 @@ decltype(auto) hash_code(T&& t) {
 uint64_t hash_code(const char* const ptr) {
   uint64_t code = 0;
   for (std::size_t i = 0; ptr[i] != '\0'; ++i) {
-    code = code * __1::HASH_FACTOR + hash_code(ptr[i]);
+    code = code * __hash::HASH_FACTOR + hash_code(ptr[i]);
   }
   return code;
 }
