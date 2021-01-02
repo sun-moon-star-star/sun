@@ -25,6 +25,10 @@
   class(const class&) = delete; \
   class& operator=(const class&) = delete;
 
+#define NO_ASSIGNABLE(class)    \
+  class(const class&) = delete; \
+  class& operator=(const class&) = delete;
+
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
