@@ -10,11 +10,12 @@
 
 namespace sun::protocol::paxos {
 
-using error = uint64_t;
+using error = uint32_t;
 
 namespace code {
-const error success = 0;
-const error failure = 1;
+
+const error ok = 0;
+const error fail = 1;
 const error fail_communication = 2;
 
 }  // namespace code

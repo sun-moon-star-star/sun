@@ -26,9 +26,9 @@ outcome_ptr accepter::prepare(proposal_sign_ptr proposal_sign) {
   if (promise_value < proposal_new_value) {
     set_proposal_value(proposal_id, proposal_new_value);
     promise_value = proposal_new_value;
-    code = code::success;
+    code = code::ok;
   } else {
-    code = code::failure;
+    code = code::fail;
   }
 
   return create_outcome(proposal_id, proposal_new_value, promise_value,
@@ -51,9 +51,9 @@ outcome_ptr accepter::accept(proposal_ptr proposal) {
       set_proposal_value(proposal_id, proposal_new_value);
     }
     save_proposal(proposal);
-    code = code::success;
+    code = code::ok;
   } else {
-    code = code::failure;
+    code = code::fail;
   }
 
   return create_outcome(proposal_id, proposal_new_value, proposal_new_value,
@@ -80,7 +80,7 @@ uint64_t accepter::get_proposal_value(uint64_t proposal_id) {
 
 accepter_ptr create_accepter() {
   const uint64_t accepter_id = sun::util::common::random::random<uint64_t>();
-  return accepter_ptr(new accepter(accepter_id));
+  return std::make_shared<accepter>(accepter_id);
 }
 
 }  // namespace sun::protocol::paxos

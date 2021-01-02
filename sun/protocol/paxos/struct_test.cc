@@ -22,18 +22,21 @@ TEST_F(StructTest, test_proposal_sign) {
 
 TEST_F(StructTest, test_proposal) {
   sun::protocol::paxos::proposal_ptr proposal =
-      sun::protocol::paxos::create_proposal(123456789llu, 1234llu, 0llu);
+      sun::protocol::paxos::create_proposal(123456789llu, 1234llu, 0llu,
+                                            nullptr, 0llu);
   ASSERT_NE(proposal, nullptr);
   ASSERT_EQ(proposal->id, 123456789llu);
   ASSERT_EQ(proposal->value, 1234llu);
   ASSERT_EQ(proposal->len, 0llu);
+  ASSERT_EQ(proposal->buffer, nullptr);
+  ASSERT_EQ(proposal->hashcode, 0llu);
 }
 
 TEST_F(StructTest, test_outcome) {
   sun::protocol::paxos::outcome_ptr outcome =
       sun::protocol::paxos::create_outcome(123456789llu, 1234llu, 1235llu,
                                            1235llu, 8765llu,
-                                           sun::protocol::paxos::code::success);
+                                           sun::protocol::paxos::code::ok);
   ASSERT_NE(outcome, nullptr);
 
   ASSERT_EQ(outcome->id, 123456789llu);
@@ -41,7 +44,7 @@ TEST_F(StructTest, test_outcome) {
   ASSERT_EQ(outcome->promise_value, 1235llu);
   ASSERT_EQ(outcome->accept_value, 1235llu);
   ASSERT_EQ(outcome->accept_hashcode, 8765llu);
-  ASSERT_EQ(outcome->code, sun::protocol::paxos::code::success);
+  ASSERT_EQ(outcome->code, sun::protocol::paxos::code::ok);
 }
 
 int main(int argc, char** argv) {

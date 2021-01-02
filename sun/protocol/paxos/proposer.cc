@@ -25,10 +25,10 @@ error proposer::propose(std::vector<accepter_ptr>& accepters,
     outcome_ptr outcome = accepter->prepare(proposal_sign);
 
     outcomes.push_back(outcome);
-    if (outcome->code == code::success) {
+    if (outcome->code == code::ok) {
       ++promise_count;
       ++response_count;
-    } else if (outcome->code == code::failure) {
+    } else if (outcome->code == code::fail) {
       if (outcome->accept_value > max_value) {
         max_value = outcome->accept_value;
         max_accepter = accepter;
@@ -43,7 +43,7 @@ error proposer::propose(std::vector<accepter_ptr>& accepters,
   }
 
   if (promise_count >= config::commit_need_num) {
-    return code::success;
+    return code::ok;
   }
 
   if (response_count < config::commit_need_num) {
@@ -51,7 +51,7 @@ error proposer::propose(std::vector<accepter_ptr>& accepters,
   }
 
   proposal = max_accepter->get_proposal(proposal_sign->id);
-  return code::failure;
+  return code::fail;
 }
 
 error proposer::commit(std::vector<accepter_ptr>& accepters,
@@ -63,29 +63,29 @@ error proposer::commit(std::vector<accepter_ptr>& accepters,
     if (outcomes[i]->code == code::fail_communication ||
         outcomes[i]->accept_hashcode != proposal->hashcode) {
       outcome_ptr outcome = accepters[i]->accept(proposal);
-      if (outcome->code == code::success) {
+      if (outcome->code == code::ok) {
         ++commit_count;
         ++response_count;
-      } else if (outcome->code == code::failure) {
+      } else if (outcome->code == code::fail) {
         ++response_count;
       }
     }
   }
 
   if (commit_count >= config::commit_need_num) {
-    return code::success;
+    return code::ok;
   }
 
   if (response_count < config::commit_need_num) {
     return code::fail_communication;
   }
 
-  return code::failure;
+  return code::fail;
 }
 
 proposer_ptr create_proposer() {
   const uint64_t proposer_id = sun::util::common::random::random<uint64_t>();
-  return proposer_ptr(new proposer(proposer_id));
+  return std::make_shared<proposer>(proposer_id);
 }
 
 }  // namespace sun::protocol::paxos
