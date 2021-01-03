@@ -12,6 +12,8 @@ IncludeCategories:
   Priority: 500
 - Regex: '^\"'
   Priority: 1000
+- Regex: '^<sys.*>'
+  Priority: 1500
 - Regex: '^<[^/]*>'
   Priority: 1500
 - Regex: '^<.*/.*'
