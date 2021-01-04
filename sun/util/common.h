@@ -25,7 +25,7 @@
   class(const class&) = delete; \
   class& operator=(const class&) = delete;
 
-#define NO_ASSIGNABLE(class)    \
+#define NO_COPYABLE(class)      \
   class(const class&) = delete; \
   class& operator=(const class&) = delete;
 

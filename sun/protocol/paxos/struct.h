@@ -54,7 +54,7 @@ struct proposal final : public proposal_sign {
     }
   }
 
-  NO_ASSIGNABLE(proposal);
+  NO_COPYABLE(proposal);
 };  // class proposer
 
 using proposal_ptr = std::shared_ptr<proposal>;
