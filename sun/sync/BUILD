@@ -5,3 +5,8 @@ cc_library(
     hdrs = ["spinlock.h"],
     srcs = ["spinlock.cc"],
 )
+
+cc_library(
+    name = "task_queue",
+    hdrs = ["task_queue.h"],
+)
