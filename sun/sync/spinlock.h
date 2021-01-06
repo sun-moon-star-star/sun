@@ -6,12 +6,16 @@
 #ifndef SUN_SYNC_SPINLOCK_H_
 #define SUN_SYNC_SPINLOCK_H_
 
+#include "sun/util/common.h"
+
 #include <atomic>
 
 namespace sun::sync {
 
 struct spinlock {
   spinlock();
+
+  NO_COPYABLE(spinlock);
 
   void lock();
 
