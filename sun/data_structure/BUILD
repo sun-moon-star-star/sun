@@ -1,3 +1,5 @@
+package(default_visibility = ["//visibility:public"])
+
 cc_library(
     name = "comparator",
     hdrs = ["comparator.h"],
@@ -58,5 +60,21 @@ cc_test(
     srcs = ["hash_table_test.cc"],
     deps = [
         ":hash_table",
+    ],
+)
+
+cc_library(
+    name = "array",
+    hdrs = ["array.h"],
+    deps = [
+        "//sun/util:common",
+    ],
+)
+
+cc_test(
+    name = "array_test",
+    srcs = ["array_test.cc"],
+    deps = [
+        ":array",
     ],
 )
