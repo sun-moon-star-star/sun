@@ -6,25 +6,23 @@
 #ifndef SUN_PROTOCOL_RAFT_LEADER_H_
 #define SUN_PROTOCOL_RAFT_LEADER_H_
 
-#include "sun/protocol/raft/server.h"
+#include "sun/protocol/raft/follower.h"
 
 #include <cstdint>
 
 namespace sun::protocol::raft {
 
 class leader {
-public:
- const uint64_t id; // equal to server.id
+ public:
+  const uint64_t id;  // equal to server.id
 
- leader(const uint64_t id) : id(id) {}
+  leader(const uint64_t id) : id(id) {}
 
-private:
-
-private:
- uint64_t _term;
- uint64_t _write_idx;
- uint64_t _commit_idx;
- follower_ptr 
+ private:
+  uint64_t _term;
+  uint64_t _write_idx;
+  uint64_t _commit_idx;
+  std::set<follower_ptr> _follower;
 
 };  // class leader
 

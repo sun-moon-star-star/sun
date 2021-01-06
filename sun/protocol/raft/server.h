@@ -12,21 +12,13 @@
 
 namespace sun::protocol::raft {
 
-class leader;
-class follower;
-class candidate;
-
 class server {
-
  public:
   const uint64_t id;
 
   server(const uint64_t id) : id(id) {}
 
-  void run() {
-
-  }
-
+  void run() {}
 
 };  // class server
 
