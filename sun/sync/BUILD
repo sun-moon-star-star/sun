@@ -10,10 +10,18 @@ cc_library(
 )
 
 cc_library(
-    name = "task_queue",
-    hdrs = ["task_queue.h"],
+    name = "queue",
+    hdrs = ["queue.h"],
     deps = [
         ":spinlock",
         "//sun/data_structure:array",
+    ],
+)
+
+cc_test(
+    name = "queue_test",
+    srcs = ["queue_test.cc"],
+    deps = [
+        ":queue",
     ],
 )
