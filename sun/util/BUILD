@@ -38,3 +38,8 @@ cc_test(
         ":hash",
     ],
 )
+
+cc_library(
+    name = "singleton",
+    hdrs = ["singleton.h"],
+)

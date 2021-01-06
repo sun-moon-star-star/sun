@@ -79,7 +79,8 @@
         "memory_resource": "cpp",
         "stack": "cpp",
         "condition_variable": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "future": "cpp"
     },
     "editor.formatOnType": true,
     "editor.formatOnSave": true,
