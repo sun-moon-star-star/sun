@@ -9,4 +9,8 @@ cc_library(
 cc_library(
     name = "task_queue",
     hdrs = ["task_queue.h"],
+    deps = [
+        ":spinlock",
+        "//sun/data_structure:array",
+    ],
 )
