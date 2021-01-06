@@ -34,7 +34,6 @@ const error fail_setkeepintvl = 6;  // setsockopt(_fd, IPPROTO_TCP,
 
 const error fail_setkeepcnt = 7;  // setsockopt(_fd, IPPROTO_TCP, TCP_KEEPCNT,
                                   // &keepalive, sizeof(keepalive)) <
-0
 
 }  // namespace code
 

@@ -1,2 +1,3 @@
 build --cxxopt=-std=c++17
 build --linkopt=-lgtest
+build --linkopt=-pthread
