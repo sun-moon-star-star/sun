@@ -24,11 +24,11 @@ struct hash_node {
 
 class hash_entry {
  public:
-  hash_entry() : _num(0), _head(nullptr) {}
+  hash_entry() : num(0), head(nullptr) {}
 
  private:
   hash_node* search(uint64_t hashcode) {
-    for (hash_node* cur = _head; cur != nullptr; cur = cur->nxt) {
+    for (hash_node* cur = head; cur != nullptr; cur = cur->nxt) {
       if (cur->hashcode == hashcode) {
         return cur;
       }
@@ -44,9 +44,9 @@ class hash_entry {
       raw_data = node->data;
       node->data = data;
     } else {
-      ++_num;
-      node = new hash_node{hashcode, data, _head};
-      _head = node;
+      ++num;
+      node = new hash_node{hashcode, data, head};
+      head = node;
     }
     return raw_data;
   }
@@ -61,13 +61,13 @@ class hash_entry {
 
   void* remove(uint64_t hashcode) {
     hash_node* last = nullptr;
-    hash_node* cur = _head;
+    hash_node* cur = head;
 
     while (cur != nullptr) {
       if (cur->hashcode == hashcode) {
-        --_num;
+        --num;
         if (last == nullptr) {
-          _head = cur->nxt;
+          head = cur->nxt;
         } else {
           last->nxt = cur->nxt;
         }
@@ -82,26 +82,21 @@ class hash_entry {
     return nullptr;
   }
 
-  hash_node* next(hash_node* node) {
-    assert(node != nullptr);
-    return node->nxt;
-  }
-
- private:
-  uint32_t _num;
-  hash_node* _head;
+  uint32_t num;
+  hash_node* head;
 };
+
 }  // namespace __hash_table
 
 template <typename KeyType, typename ValueType,
           typename HashFunc = ::sun::util::hasher<KeyType>>
 class hash_table {
- public:
   using data_type = struct {
     KeyType key;
     ValueType value;
   };
 
+ public:
   hash_table(uint32_t factor = 5, uint32_t slots_num = 16)
       : _factor(factor),
         _slots_num(1u << (32 - __builtin_clz(
@@ -160,6 +155,53 @@ class hash_table {
   }
 
   uint32_t count() const { return _count; }
+
+  struct iterator {
+   private:
+    bool next() {
+      for (; _now_slot < _slots_num; _node = nullptr, ++_now_slot, ++_slot) {
+        if (_node == nullptr) {
+          _node = _slot->head;
+        } else {
+          _node = _node->nxt;
+        }
+
+        if (_node != nullptr) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+   public:
+    iterator(uint32_t slots_num, uint32_t now_slot,
+             __hash_table::hash_entry* slot)
+        : _slots_num(slots_num),
+          _now_slot(now_slot),
+          _slot(slot),
+          _node(nullptr) {
+      next();
+    }
+
+    data_type* operator->() const {
+      return reinterpret_cast<data_type*>(_node->data);
+    }
+
+    iterator& operator++() {
+      next();
+      return *this;
+    }
+
+    bool valid() const { return _node != nullptr; }
+
+   private:
+    uint32_t _slots_num;
+    uint32_t _now_slot;
+    __hash_table::hash_entry* _slot;
+    __hash_table::hash_node* _node;
+  };
+
+  iterator get_iterator() const { return iterator(_slots_num, 0, _slots); }
 
  private:
   const uint32_t _factor;
