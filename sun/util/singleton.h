@@ -19,7 +19,7 @@ class singleton final {
     if (tmp == nullptr) {
       std::lock_guard<std::mutex> lock(_mutex);
       tmp = instance_.load(std::memory_order::memory_order_relaxed);
-      if (_instance == nullptr) {
+      if (tmp == nullptr) {
         tmp = new T;
         _instance.store(tmp, std::memory_order::memory_order_release);
       }

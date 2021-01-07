@@ -43,3 +43,11 @@ cc_library(
     name = "singleton",
     hdrs = ["singleton.h"],
 )
+
+cc_library(
+    name = "singleton_manager",
+    hdrs = ["singleton_manager.h"],
+    deps = [
+        "//sun/data_structure:hash_table",
+    ],
+)
