@@ -12,7 +12,7 @@ namespace sun::util {
 
 struct singleton_manager final {
  public:
-  typedef void (*task)(void*);
+  using task = std::function<void(void*)>;
 
   void register_type(void* ptr, task t) { _task.set(ptr, t); }
 
@@ -25,7 +25,9 @@ struct singleton_manager final {
   }
 
  private:
-  std::hash_table<void*, task> _task;
+  ::sun::data_structure::hash_table<void*, task> _task;
 };  // class singleton_manager
+
+singleton_manager g_singleton_manager;
 
 }  // namespace sun::util
