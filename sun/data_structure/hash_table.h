@@ -82,6 +82,11 @@ class hash_entry {
     return nullptr;
   }
 
+  hash_node* next(hash_node* node) {
+    assert(node != nullptr);
+    return node->nxt;
+  }
+
  private:
   uint32_t _num;
   hash_node* _head;
@@ -92,6 +97,11 @@ template <typename KeyType, typename ValueType,
           typename HashFunc = ::sun::util::hasher<KeyType>>
 class hash_table {
  public:
+  using data_type = struct {
+    KeyType key;
+    ValueType value;
+  };
+
   hash_table(uint32_t factor = 5, uint32_t slots_num = 16)
       : _factor(factor),
         _slots_num(1u << (32 - __builtin_clz(
@@ -103,12 +113,11 @@ class hash_table {
     uint64_t hashcode = _hashfunc(key);
     uint32_t slot = get_slot(hashcode);
 
-    ValueType* ptr = reinterpret_cast<ValueType*>(malloc(sizeof(ValueType)));
-    *ptr = value;
+    data_type* ptr = new data_type{.key = key, .value = value};
 
     void* data = _slots[slot].set(hashcode, ptr);
     if (data != nullptr) {
-      ptr = reinterpret_cast<ValueType*>(data);
+      ptr = reinterpret_cast<data_type*>(data);
       delete ptr;
     } else {
       ++_count;
@@ -123,7 +132,7 @@ class hash_table {
     if (data == nullptr) {
       return false;
     } else {
-      *value = *reinterpret_cast<ValueType*>(data);
+      *value = reinterpret_cast<data_type*>(data)->value;
     }
     return true;
   }
@@ -139,8 +148,8 @@ class hash_table {
     }
 
     --_count;
-    ValueType* raw_data = reinterpret_cast<ValueType*>(data);
-    *value = *raw_data;
+    data_type* raw_data = reinterpret_cast<data_type*>(data);
+    *value = raw_data->value;
     delete raw_data;
 
     return true;
