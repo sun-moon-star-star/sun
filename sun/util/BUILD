@@ -14,19 +14,6 @@ cc_test(
 )
 
 cc_library(
-    name = "struct",
-    hdrs = ["struct.h"],
-)
-
-cc_test(
-    name = "struct_test",
-    srcs = ["struct_test.cc"],
-    deps = [
-        ":struct",
-    ],
-)
-
-cc_library(
     name = "hash",
     hdrs = ["hash.h"],
 )
