@@ -12,13 +12,13 @@
 namespace sun::util {
 
 template <typename T>
-class singleton final {
+class singleton {
  public:
-  static T* GetInstance() {
+  static T* get_instance() {
     T* tmp = _instance.load(std::memory_order::memory_order_acquire);
     if (tmp == nullptr) {
       std::lock_guard<std::mutex> lock(_mutex);
-      tmp = instance_.load(std::memory_order::memory_order_relaxed);
+      tmp = _instance.load(std::memory_order::memory_order_relaxed);
       if (tmp == nullptr) {
         tmp = new T;
         _instance.store(tmp, std::memory_order::memory_order_release);
@@ -30,16 +30,16 @@ class singleton final {
  protected:
   static std::mutex _mutex;
   static std::atomic<T*> _instance;
-  Singleton() {}
-  Singleton(const Singleton&);
-  Singleton& operator=(const Singleton&);
+  singleton() {}
+  singleton(const singleton&);
+  singleton& operator=(const singleton&);
 };
 
 template <typename T>
-std::atomic<T*> Singleton<T>::_instance = nullptr;
+std::atomic<T*> singleton<T>::_instance = nullptr;
 
 template <typename T>
-std::mutex Singleton<T>::_mutex;
+std::mutex singleton<T>::_mutex;
 
 }  // namespace sun::util
 

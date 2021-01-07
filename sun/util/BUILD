@@ -31,6 +31,14 @@ cc_library(
     hdrs = ["singleton.h"],
 )
 
+cc_test(
+    name = "singleton_test",
+    srcs = ["singleton_test.cc"],
+    deps = [
+        ":singleton",
+    ],
+)
+
 cc_library(
     name = "singleton_manager",
     hdrs = ["singleton_manager.h"],
