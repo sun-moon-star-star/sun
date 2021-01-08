@@ -1,6 +1,7 @@
 /**
  * @file queue.h
  * @author sun-moon-star-star
+ * @note the queue use uint64_t if
  */
 
 #ifndef SUN_SYNC_QUEUE_H_
@@ -56,12 +57,6 @@ struct queue final {
 
  private:
   void push_common(void* const item) {
-    if (_back == UINT64_MAX - 1) {
-      uint64_t sub_step = _front - _front % capcity;
-      _front -= sub_step;
-      _back -= sub_step;
-    }
-
     uint64_t new_idx_in_data = _back % capcity;
     ++_back;
 

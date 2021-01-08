@@ -24,18 +24,18 @@ TEST_F(QueueTest, test_case) {
   queue<> q(1);
 
   auto produce_fun = [&q, &produce_cnt]() {
-      void *ptr = nullptr;
-      q.push(ptr);
-      ++produce_cnt;
+    void* ptr = nullptr;
+    q.push(ptr);
+    ++produce_cnt;
   };
 
   for (int i = 0; i < test_cnt; ++i) {
     producer[i] = std::thread(produce_fun);
   }
 
-  void *ptr = nullptr;
-  for (int i = 0;i < test_cnt; ++i) {
-    void *data;
+  void* ptr = nullptr;
+  for (int i = 0; i < test_cnt; ++i) {
+    void* data;
     int sum = produce_cnt;
     ASSERT_TRUE(sum == i || sum == i + 1);
     q.pop(&data);
