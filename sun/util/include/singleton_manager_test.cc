@@ -3,12 +3,13 @@
  * @author sun-moon-star-star
  */
 
-#include "sun/util/singleton_manager.h"
+#define USE_SINGLETON_DELETE
+
+#include "sun/util/singleton.h"
 
 #include <iostream>
 
 int main(int argc, char** argv) {
-  using sun::util::g_singleton_manager;
   using sun::util::singleton;
 
   struct A {
@@ -16,11 +17,6 @@ int main(int argc, char** argv) {
     ~A() { std::cout << "~A()" << std::endl; }
   };
 
-  auto delete_fun = [](void* ptr) {
-    A* a_ptr = reinterpret_cast<A*>(ptr);
-    delete a_ptr;
-  };
-
-  g_singleton_manager.register_type(singleton<A>::get_instance(), delete_fun);
+  singleton<A>::get_instance();
   return 0;
 }

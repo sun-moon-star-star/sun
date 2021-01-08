@@ -20,6 +20,12 @@ TEST_F(SingletonTest, test_singleton) {
             reinterpret_cast<void*>(singleton<double>::get_instance()));
   ASSERT_EQ(reinterpret_cast<void*>(singleton<double>::get_instance()),
             reinterpret_cast<void*>(singleton<double>::get_instance()));
+  struct A {
+    A() { std::cout << "A()" << std::endl; }
+    ~A() { std::cout << "~A()" << std::endl; }
+  };
+
+  singleton<A>::get_instance();
 }
 
 int main(int argc, char** argv) {

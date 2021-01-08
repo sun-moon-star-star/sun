@@ -3,12 +3,18 @@
  * @author sun-moon-star-star
  */
 
+#ifndef SUN_UTIL_INCLUDE_SINGLETON_MANAGER_H_
+#define SUN_UTIL_INCLUDE_SINGLETON_MANAGER_H_
+
+#ifndef SUN_UTIL_SINGLETON_H_
+#error "please don't include this file directly"
+#endif
+
 #include "sun/data_structure/hash_table.h"
-#include "sun/util/singleton.h"
 
 #include <functional>
 
-namespace sun::util {
+namespace sun::util::include {
 
 struct singleton_manager final {
  public:
@@ -30,4 +36,6 @@ struct singleton_manager final {
 
 singleton_manager g_singleton_manager;
 
-}  // namespace sun::util
+}  // namespace sun::util::include
+
+#endif  // SUN_UTIL_INCLUDE_SINGLETON_MANAGER_H_

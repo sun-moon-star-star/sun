@@ -6,6 +6,10 @@
 #ifndef SUN_UTIL_SINGLETON_H_
 #define SUN_UTIL_SINGLETON_H_
 
+#ifndef NO_USE_SINGLETON_DELETE
+#include "sun/util/include/singleton_manager.h"
+#endif
+
 #include <atomic>
 #include <mutex>
 
@@ -22,6 +26,12 @@ class singleton {
       if (tmp == nullptr) {
         tmp = new T;
         _instance.store(tmp, std::memory_order::memory_order_release);
+#ifndef NO_USE_SINGLETON_DELETE
+        include::g_singleton_manager.register_type(tmp, [](void* ptr) {
+          T* t = reinterpret_cast<T*>(ptr);
+          delete t;
+        });
+#endif
       }
     }
     return _instance;
