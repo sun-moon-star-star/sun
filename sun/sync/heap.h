@@ -29,16 +29,24 @@ class heap {
     _heap.push(key, value);
   }
 
-  void pop(KeyType& key, ValueType& value) {
+  bool pop(KeyType& key, ValueType& value) {
+    if (_heap.size() == 0) {
+      return false;
+    }
+
     data d;
 
     {
       const std::lock_guard<LockType> lock(_lock);
+      if (_heap.size() == 0) {
+        return false;
+      }
       pop(&d);
     }
 
     key = d.key;
     value = d.value;
+    return true;
   }
 
   uint32_t size() const { return _heap.size(); }

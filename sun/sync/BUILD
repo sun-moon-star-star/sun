@@ -25,3 +25,30 @@ cc_test(
         ":queue",
     ],
 )
+
+cc_library(
+    name = "heap",
+    hdrs = ["heap.h"],
+    deps = [
+        ":spinlock",
+        "//sun/data_structure:heap",
+    ],
+)
+
+cc_library(
+    name = "list",
+    hdrs = ["list.h"],
+    deps = [
+        ":spinlock",
+    ],
+)
+
+cc_library(
+    name = "task_queue",
+    hdrs = ["task_queue.h"],
+    deps = [
+        ":list",
+        ":heap",
+        ":queue",
+    ],
+)
