@@ -41,6 +41,8 @@ class heap {
     value = d.value;
   }
 
+  uint32_t size() const { return _heap.size(); }
+
  private:
   ::sun::data_structure::heap<data> _heap;
   LockType _lock;
