@@ -23,7 +23,7 @@ namespace sun::sync {
  * @param <typename LockType> LockType must have lock(), unlock() and all
  *     initial operation in construct function
  */
-template <typename LockType = spinlock>
+template <typename T = void*, typename LockType = spinlock>
 struct queue final {
   const uint32_t capcity;
 
@@ -56,7 +56,7 @@ struct queue final {
   }
 
  private:
-  void push_common(void* const item) {
+  void push_common(const T& item) {
     uint64_t new_idx_in_data = _back % capcity;
     ++_back;
 
@@ -72,7 +72,7 @@ struct queue final {
   }
 
  public:
-  bool try_push(void* const item) {
+  bool try_push(const T& item) {
     const std::lock_guard<LockType> lock(_lock);
 
     if (_front + capcity == _back) {
@@ -84,7 +84,7 @@ struct queue final {
     return true;
   }
 
-  void push(void* const item) {
+  void push(const T& item) {
     std::unique_lock<LockType> lock(_lock);
 
     if (capcity == _back - _front) {
@@ -99,7 +99,7 @@ struct queue final {
   }
 
  private:
-  void pop_common(void** item) {
+  void pop_common(T* item) {
     uint64_t idx_in_data = _front % capcity;
     ++_front;
 
@@ -108,7 +108,7 @@ struct queue final {
   }
 
  public:
-  bool try_pop(void** item) {
+  bool try_pop(T* item) {
     const std::lock_guard<LockType> lock(_lock);
 
     if (_front == _back) {
@@ -120,7 +120,7 @@ struct queue final {
     return true;
   }
 
-  void pop(void** item) {
+  void pop(T* item) {
     std::unique_lock<LockType> lock(_lock);
 
     if (_front == _back) {
@@ -140,7 +140,7 @@ struct queue final {
   std::condition_variable_any _empty;
   std::condition_variable_any _fill;
   LockType _lock;
-  ::sun::data_structure::array<void*> _data;
+  ::sun::data_structure::array<T> _data;
 };
 
 }  // namespace sun::sync
