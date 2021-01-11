@@ -1,7 +1,6 @@
 /**
  * @file queue.h
  * @author sun-moon-star-star
- * @note the queue use uint64_t if
  */
 
 #ifndef SUN_SYNC_QUEUE_H_
@@ -73,7 +72,7 @@ struct queue final {
 
  public:
   bool try_push(const T& item) {
-    const std::lock_guard<LockType> lock(_lock);
+    const std::unique_lock<LockType> lock(_lock);
 
     if (_front + capcity == _back) {
       return false;
@@ -81,19 +80,25 @@ struct queue final {
 
     push_common(item);
 
+    if (_front + 1 == _back) {
+      lock.unlock();
+      _empty.notify_one();
+    }
+
     return true;
   }
 
   void push(const T& item) {
     std::unique_lock<LockType> lock(_lock);
 
-    if (capcity == _back - _front) {
+    while (capcity == _back - _front) {
       _fill.wait(lock, [&] { return _front + capcity != _back; });
     }
 
     push_common(item);
 
     if (_front + 1 == _back) {
+      lock.unlock();
       _empty.notify_one();
     }
   }
@@ -109,7 +114,7 @@ struct queue final {
 
  public:
   bool try_pop(T* item) {
-    const std::lock_guard<LockType> lock(_lock);
+    const std::unique_lock<LockType> lock(_lock);
 
     if (_front == _back) {
       return false;
@@ -117,19 +122,25 @@ struct queue final {
 
     pop_common(item);
 
+    if (_back - _front + 1 == capcity) {
+      lock.unlock();
+      _fill.notify_one();
+    }
+
     return true;
   }
 
   void pop(T* item) {
     std::unique_lock<LockType> lock(_lock);
 
-    if (_front == _back) {
+    while (_front == _back) {
       _empty.wait(lock, [&] { return _front != _back; });
     }
 
     pop_common(item);
 
     if (_back - _front + 1 == capcity) {
+      lock.unlock();
       _fill.notify_one();
     }
   }

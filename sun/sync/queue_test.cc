@@ -14,7 +14,7 @@ class QueueTest : public testing::Test {};
 using sun::sync::queue;
 
 TEST_F(QueueTest, test_case) {
-  const int test_cnt = 100;
+  const int test_cnt = 996;
 
   uint64_t produce_cnt = 0llu;
 
@@ -37,7 +37,7 @@ TEST_F(QueueTest, test_case) {
   for (int i = 0; i < test_cnt; ++i) {
     void* data;
     int sum = produce_cnt;
-    ASSERT_TRUE(sum == i || sum == i + 1);
+    ASSERT_TRUE(sum == i || sum == i + 1 || sum + 1 == i);
     q.pop(&data);
     ASSERT_EQ(data, ptr);
   }
