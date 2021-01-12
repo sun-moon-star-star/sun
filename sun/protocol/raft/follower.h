@@ -7,21 +7,22 @@
 #define SUN_PROTOCOL_RAFT_FOLLOWER_H_
 
 #include "sun/protocol/raft/leader.h"
+#include "sun/protocol/raft/node_id.h"
 
 #include <cstdint>
 
 namespace sun::protocol::raft {
 class follower {
  public:
-  const uint64_t id;  // equal to server.id
+  node_id id;  // equal to server.id
 
-  follower(const uint64_t id) : id(id) {}
-
-  friend class leader;
+  follower() {}
 
  private:
-  uint64_t _write_idx;
-  uint64_t _commit_idx;
+  uint64_t _term;          // 当前任期
+  uint64_t _index_idx;     // 下一次写入的位置
+  uint64_t _commit_idx;    // 已经提交的位置
+  uint64_t _last_applied;  // 已经应用的位置
   leader_ptr _leader;
 };  // class follower
 

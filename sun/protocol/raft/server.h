@@ -14,9 +14,9 @@ namespace sun::protocol::raft {
 
 class server {
  public:
-  const uint64_t id;
+  node_id id;
 
-  server(const uint64_t id) : id(id) {}
+  server() {}
 
   void run() {}
 

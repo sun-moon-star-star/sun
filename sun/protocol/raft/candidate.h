@@ -14,6 +14,7 @@ namespace sun::protocol::raft {
 
 class candidate {
  public:
+  node_id id;
 };  // class candidate
 
 }  // namespace sun::protocol::raft
