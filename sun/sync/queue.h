@@ -26,7 +26,7 @@ template <typename T = void*, typename LockType = spinlock>
 struct queue final {
   const uint32_t capcity;
 
-  queue(const uint32_t capcity)
+  queue(const uint32_t capcity = 4294967296u)
       : capcity(capcity), _front(0llu), _back(0llu), _data(1llu * capcity) {}
 
   NO_COPYABLE(queue);

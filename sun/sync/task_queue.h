@@ -20,6 +20,37 @@
 
 namespace sun::sync {
 
+namespace __task_queue {
+
+template <typename T>
+class queue {
+  queue() : _state(0llu) {}
+
+  void push(uint8_t priority, const T& t) {
+    priority = min(priority, 63);
+    _state |= (1llu << priority);
+    _normal_tasks[priority].push(t);
+  }
+
+  void pop(T* t) {
+    uint8_t priority = priority =
+        (_state & 4294967295)
+            ? __builtin_ctz(_state & 4294967295)
+            : __builtin_ctz(((_state >> 32) & 4294967295) + 32);
+
+    _normal_tasks.pop(t);
+    if (_normal_tasks.size() == 0) {
+      _state ^= (1llu << priority);
+    }
+  }
+
+ private:
+  uint64_t _state;
+  queue<T> _normal_tasks[64];
+};
+
+}  // namespace __task_queue
+
 class task_queue {
  public:
   using call = std::function<void(void*)>;
