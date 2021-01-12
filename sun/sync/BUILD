@@ -9,6 +9,14 @@ cc_library(
     ],
 )
 
+cc_test(
+    name = "spinlock_test",
+    srcs = ["spinlock_test.cc"],
+    deps = [
+        ":spinlock",
+    ],
+)
+
 cc_library(
     name = "queue",
     hdrs = ["queue.h"],
