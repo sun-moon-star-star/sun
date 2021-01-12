@@ -19,13 +19,16 @@ class list final {
   struct data {
     T value;
     data *pre, *nxt;
-    data(const& T value) : value(value), pre(nullptr), nxt(nullptr) {}
+    data(const T& value) : value(value), pre(nullptr), nxt(nullptr) {}
   } __attribute__((__packed__));
 
  public:
   list() : _head(nullptr), _tail(nullptr), _size(0llu) {}
 
-  uint64_t size() const { return _size; }
+  uint64_t size() {
+    const std::lock_guard<LockType> lock(_lock);
+    return _size;
+  }
 
   void push_back(const T& t) {
     data* d = new data(t);
@@ -96,7 +99,7 @@ class list final {
       }
       d = _head;
       --_size;
-      *t = head->value;
+      *t = _head->value;
       if (_head->nxt) {
         _head = _head->nxt;
         _head->pre = nullptr;

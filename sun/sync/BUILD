@@ -43,6 +43,14 @@ cc_library(
     ],
 )
 
+cc_test(
+    name = "list_test",
+    srcs = ["list_test.cc"],
+    deps = [
+        ":list",
+    ],
+)
+
 cc_library(
     name = "task_queue",
     hdrs = ["task_queue.h"],
