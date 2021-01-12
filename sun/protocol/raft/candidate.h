@@ -15,6 +15,10 @@ namespace sun::protocol::raft {
 class candidate {
  public:
   node_id id;
+
+ private:
+  uint64_t _election_timeout;
+  uint64_t _votes_count;
 };  // class candidate
 
 }  // namespace sun::protocol::raft

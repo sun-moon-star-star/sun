@@ -1,18 +1,36 @@
 /**
- * @file node_group.h
+ * @file node.h
  * @author sun-moon-star-star
  */
 
-#ifndef SUN_PROTOCOL_RAFT_NODE_GROUP_H_
-#define SUN_PROTOCOL_RAFT_NODE_GROUP_H_
+#ifndef SUN_PROTOCOL_RAFT_NODE_H_
+#define SUN_PROTOCOL_RAFT_NODE_H_
 
-#include "sun/data_structure/hash_table.h"
-#include "sun/protocol/raft/node_id.h"
+#include <cstdint>
+#include <string>
 
 namespace sun::protocol::raft {
 
+struct node_id {
+  uint64_t id;  // 节点id
+};
+
+struct address {
+  std::string host;
+  uint32_t port;
+};
+
+struct node_endpoint {
+  node_id id;
+  address addr;
+};
+
+struct node_replicating_state {};
+
 struct node_member {
   node_id id;  // 节点id
+  node_endpoint endpoint;
+  node_replicating_state replicating_state;
 };
 
 class node_group {
@@ -35,4 +53,4 @@ class node_group {
 
 }  // namespace sun::protocol::raft
 
-#endif  // SUN_PROTOCOL_RAFT_NODE_GROUP_H_
+#endif  // SUN_PROTOCOL_RAFT_NODE_H_
