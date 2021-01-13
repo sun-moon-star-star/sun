@@ -31,8 +31,12 @@ struct queue final {
 
   NO_COPYABLE(queue);
 
-  uint32_t count() const {
+  uint32_t size() const {
     const std::lock_guard<LockType> lock(_lock);
+    return static_cast<uint32_t>(_back - _front);
+  }
+
+  uint32_t size_with_no_lock() const {
     return static_cast<uint32_t>(_back - _front);
   }
 
