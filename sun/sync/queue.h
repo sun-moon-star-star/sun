@@ -72,6 +72,10 @@ struct queue final {
 
  public:
   bool try_push(const T& item) {
+    if (_front + capcity == _back) {
+      return false;
+    }
+
     const std::unique_lock<LockType> lock(_lock);
 
     if (_front + capcity == _back) {
@@ -84,6 +88,29 @@ struct queue final {
       lock.unlock();
       _empty.notify_one();
     }
+
+    return true;
+  }
+
+  bool try_push_sync_with(const T& item, std::function<void(void)> func) {
+    if (_front + capcity == _back) {
+      return false;
+    }
+
+    const std::unique_lock<LockType> lock(_lock);
+
+    if (_front + capcity == _back) {
+      return false;
+    }
+
+    push_common(item);
+
+    if (_front + 1 == _back) {
+      lock.unlock();
+      _empty.notify_one();
+    }
+
+    func();
 
     return true;
   }
@@ -114,6 +141,10 @@ struct queue final {
 
  public:
   bool try_pop(T* item) {
+    if (_front == _back) {
+      return false;
+    }
+
     const std::unique_lock<LockType> lock(_lock);
 
     if (_front == _back) {
@@ -126,6 +157,29 @@ struct queue final {
       lock.unlock();
       _fill.notify_one();
     }
+
+    return true;
+  }
+
+  bool try_pop_sync_witch(T* item, std::function<void(void)> func) {
+    if (_front == _back) {
+      return false;
+    }
+
+    const std::unique_lock<LockType> lock(_lock);
+
+    if (_front == _back) {
+      return false;
+    }
+
+    pop_common(item);
+
+    if (_back - _front + 1 == capcity) {
+      lock.unlock();
+      _fill.notify_one();
+    }
+
+    func();
 
     return true;
   }
