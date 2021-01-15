@@ -41,3 +41,9 @@ cc_test(
         ":singleton",
     ],
 )
+
+cc_library(
+    name = "status",
+    hdrs = ["status.h"],
+    srcs = ["status.cc"],
+)
