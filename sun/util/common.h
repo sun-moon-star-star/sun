@@ -32,20 +32,4 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
-namespace sun::util::common::random {
-
-std::default_random_engine default_random_engine;
-
-void init_random_engine_with_time() { default_random_engine.seed(time(NULL)); }
-
-template <typename T = uint64_t>
-std::uniform_int_distribution<T> random_getter;
-
-template <typename T = uint64_t>
-T random() {
-  return random_getter<T>(default_random_engine);
-}
-
-}  // namespace sun::util::common::random
-
 #endif  // SUN_UTIL_COMMON_H_
