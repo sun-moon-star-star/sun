@@ -35,7 +35,4 @@ TEST_F(CommonTest, test_common) {
   ASSERT_EQ(func2(0), "func2");
 }
 
-int main(int argc, char** argv) {
-  testing::InitGoogleTest(&argc, argv);
-  return RUN_ALL_TESTS();
-}
+TEST_MAIN
