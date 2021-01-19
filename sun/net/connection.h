@@ -62,6 +62,45 @@ struct connection_type {
   int (*get_type)(connection* conn);
 };
 
+static inline int conn_connect(
+    connection* conn, const char* addr, int port, const char* src_addr,
+    int (*set_read_handler)(connection* conn, connection_callback_func handler);
+    connect_handler) {
+  return conn->type->connect(conn, addr, port, src_addr, connect_handler);
+}
+
+static inline int conn_write(connection* conn, const void* data,
+                             size_t data_len) {
+  return conn->type->write(conn, data, data_len);
+}
+
+static inline int conn_read(connection* conn, void* buf, size_t buf_len) {
+  return conn->type->read(conn, buf, buf_len);
+}
+
+static inline int conn_set_write_handler(connection* conn,
+                                         connection_callback_func func) {
+  return conn->type->set_write_handler(conn, func, 0);
+}
+
+/* Register a read handler, to be called when the connection is readable.
+ * If NULL, the existing handler is removed.
+ */
+static inline int conn_set_read_handler(connection* conn,
+                                        connection_callback_func func) {
+  return conn->type->set_read_handler(conn, func);
+}
+
+static inline int conn_blocking_connect(connection* conn, const char* addr,
+                                        int port, long long timeout) {
+  return conn->type->blocking_connect(conn, addr, port, timeout);
+}
+
+static inline int conn_accept(connection* conn,
+                              connection_callback_func accept_handler) {
+  return conn->type->accept(conn, accept_handler);
+}
+
 int conn_block(connection* conn);
 int conn_non_block(connection* conn);
 int conn_enable_tcp_no_delay(connection* conn);
