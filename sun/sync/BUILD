@@ -21,7 +21,6 @@ cc_library(
     name = "queue",
     hdrs = ["queue.h"],
     deps = [
-        ":spinlock",
         "//sun/data_structure:array",
     ],
 )
@@ -38,7 +37,6 @@ cc_library(
     name = "heap",
     hdrs = ["heap.h"],
     deps = [
-        ":spinlock",
         "//sun/data_structure:heap",
     ],
 )
@@ -46,9 +44,6 @@ cc_library(
 cc_library(
     name = "list",
     hdrs = ["list.h"],
-    deps = [
-        ":spinlock",
-    ],
 )
 
 cc_test(

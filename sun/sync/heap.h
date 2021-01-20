@@ -7,14 +7,13 @@
 #define SUN_SYNC_HEAP_H_
 
 #include "sun/data_structure/heap.h"
-#include "sun/sync/spinlock.h"
 
 #include <mutex>
 
 namespace sun::sync {
 
 template <typename KeyType = uint8_t, typename ValueType = void*,
-          typename LockType = spinlock>
+          typename LockType = std::mutex>
 class heap {
  private:
   struct data {

@@ -6,14 +6,12 @@
 #ifndef SUN_SYNC_LIST_H_
 #define SUN_SYNC_LIST_H_
 
-#include "sun/sync/spinlock.h"
-
 #include <cstdint>
 #include <mutex>
 
 namespace sun::sync {
 
-template <typename T = void*, typename LockType = spinlock>
+template <typename T = void*, typename LockType = std::mutex>
 class list final {
  private:
   struct data {

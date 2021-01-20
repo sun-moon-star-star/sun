@@ -7,7 +7,6 @@
 #define SUN_SYNC_QUEUE_H_
 
 #include "sun/data_structure/array.h"
-#include "sun/sync/spinlock.h"
 
 #include <array>
 #include <condition_variable>
@@ -22,7 +21,7 @@ namespace sun::sync {
  * @param <typename LockType> LockType must have lock(), unlock() and all
  *     initial operation in construct function
  */
-template <typename T = void*, typename LockType = spinlock>
+template <typename T = void*, typename LockType = std::mutex>
 struct queue final {
   const uint32_t capcity;
 

@@ -80,7 +80,7 @@ class queue {
 
 }  // namespace __task_queue
 
-template <typename LockType = spinlock>
+template <typename LockType = std::mutex>
 class task_queue {
  public:
   using call = std::function<void(void*)>;
