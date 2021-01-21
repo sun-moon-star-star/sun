@@ -33,6 +33,10 @@ struct array final {
   }
 
   array& operator=(const array& other) {
+    if (this == &other) {
+      return *this;
+    }
+
     if (_data != nullptr) {
       free(_data);
       _data = nullptr;
