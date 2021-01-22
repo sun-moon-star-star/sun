@@ -9,6 +9,10 @@
 #include <ctime>
 #include <random>
 
+/** @ref: https://en.wikipedia.org/wiki/Restrict */
+#ifndef restrict
+#define restrict
+
 #define likely(x) __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
 #define IF_TRUE_RETURN(condition, statement) \
