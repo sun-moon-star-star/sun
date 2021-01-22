@@ -32,11 +32,10 @@
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 
-#define TEST_MAIN                       \
-  int main(int argc, char** argv) {     \
-    \ 
-  testing::InitGoogleTest(&argc, argv); \
-    return RUN_ALL_TESTS();             \
+#define TEST_MAIN                         \
+  int main(int argc, char** argv) {       \
+    testing::InitGoogleTest(&argc, argv); \
+    return RUN_ALL_TESTS();               \
   }
 
 #endif  // SUN_UTIL_COMMON_H_
