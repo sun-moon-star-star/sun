@@ -134,6 +134,10 @@ struct time {
   std::string month_string() {
     return to_string(static_cast<enum month>(month));
   }
+
+  std::string week_string() {
+    return to_string(static_cast<enum week>(week()));
+  }
 } __attribute__((__packed__));
 
 }  // namespace sun

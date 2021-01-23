@@ -12,6 +12,7 @@
 /** @ref: https://en.wikipedia.org/wiki/Restrict */
 #ifndef restrict
 #define restrict
+#endif
 
 #define likely(x) __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
