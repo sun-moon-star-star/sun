@@ -47,3 +47,8 @@ cc_library(
     hdrs = ["status.h"],
     srcs = ["status.cc"],
 )
+
+cc_library(
+    name = "decorator",
+    hdrs = ["decorator.h"],
+)
