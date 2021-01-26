@@ -25,6 +25,9 @@ struct array final {
         _alloc_size(other._alloc_size),
         _use_size(other._use_size) {
     _data = reinterpret_cast<T*>(malloc(sizeof(T) * _alloc_size));
+    if (_data == nullptr) {
+      // throw expection??
+    }
     for (uint64_t i = 0; i < _use_size; ++i) {
       new (_data + i) T(other._data[i]);
     }
@@ -44,6 +47,9 @@ struct array final {
     _alloc_size = other._alloc_size;
     _use_size = other._use_size;
     _data = reinterpret_cast<T*>(malloc(sizeof(T) * _alloc_size));
+    if (_data == nullptr) {
+      // throw expection??
+    }
     for (uint64_t i = 0; i < _use_size; ++i) {
       new (_data + i) T(other._data[i]);
     }
@@ -75,6 +81,8 @@ struct array final {
 
   uint64_t alloc_size() const { return _alloc_size; }
 
+  int set_size(uint64_t size) {}
+
   int fill_n(uint64_t n) {
     if (unlikely(n > _capcity - _use_size)) {
       return -1;
@@ -82,9 +90,21 @@ struct array final {
 
     uint64_t last_use_size = _use_size;
     uint64_t last_alloc_size = _alloc_size;
-    _alloc_size =
+
+    uint64_t alloc_size =
         min(max(last_alloc_size * 3 / 2, last_use_size + n), _capcity);
-    _data = reinterpret_cast<T*>(realloc(_data, sizeof(T) * _alloc_size));
+    T* new_data = reinterpret_cast<T*>(realloc(_data, sizeof(T) * alloc_size));
+    if (new_data == nullptr && alloc_size > last_use_size + n) {
+      alloc_size = last_use_size + n;
+      new_data = reinterpret_cast<T*>(realloc(_data, sizeof(T) * alloc_size));
+    }
+
+    if (new_data == nullptr) {
+      return -1;
+    }
+    _alloc_size = alloc_size;
+    _data = new_data;
+
     _use_size += n;
 
     for (uint64_t i = 0; i < n; ++i) {
@@ -106,8 +126,25 @@ struct array final {
       new (_data + (_use_size++)) T(std::forward<P>(t));
       return 0;
     } else if (_alloc_size < _capcity) {  // _use_size == _alloc_size
-      _alloc_size = min(_alloc_size * 3 / 2, _capcity);
-      _data = reinterpret_cast<T*>(realloc(_data, sizeof(T) * _alloc_size));
+      uint64_t alloc_size = min(_alloc_size * 3 / 2, _capcity);
+
+      T* data = reinterpret_cast<T*>(realloc(_data, sizeof(T) * alloc_size));
+      // todo: 内存realloc失败如何处理
+      if (data == nullptr) {
+        data =
+            reinterpret_cast<T*>(realloc(_data, sizeof(T) * (_use_size + 20)));
+        if (data == nullptr) {
+          data =
+              reinterpret_cast<T*>(realloc(_data, sizeof(T) * (_use_size + 1)));
+        }
+      }
+
+      if (data == nullptr) {
+        return -1;
+      }
+
+      _alloc_size = alloc_size;
+      _data = data;
       new (_data + (_use_size++)) T(std::forward<P>(t));
       return 0;
     }
@@ -131,12 +168,17 @@ struct array final {
   T& operator[](uint64_t idx) { return _data[idx]; }
 
   void fixed() {
-    _alloc_size = _use_size;
-    if (_alloc_size == 0) {
+    uint64_t alloc_size = _use_size;
+    if (alloc_size == 0) {
+      _alloc_size = 0;
       free(_data);
       _data = nullptr;
     } else {
-      _data = reinterpret_cast<T*>(realloc(_data, sizeof(T) * _alloc_size));
+      T* data = reinterpret_cast<T*>(realloc(_data, sizeof(T) * alloc_size));
+      if (data != nullptr) {
+        _alloc_size = alloc_size;
+        _data = data;
+      }
     }
   }
 
