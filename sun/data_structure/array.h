@@ -16,7 +16,7 @@ namespace sun::data_structure {
 
 template <typename T>
 struct array final {
-  array(const uint64_t capcity = UINT64_MAX)
+  explicit array(const uint64_t capcity = UINT64_MAX)
       : _capcity(capcity), _data(nullptr), _alloc_size(0), _use_size(0) {}
 
   array(const array& other)
@@ -81,8 +81,6 @@ struct array final {
 
   uint64_t alloc_size() const { return _alloc_size; }
 
-  int set_size(uint64_t size) {}
-
   int fill_n(uint64_t n) {
     if (unlikely(n > _capcity - _use_size)) {
       return -1;
@@ -93,10 +91,14 @@ struct array final {
 
     uint64_t alloc_size =
         min(max(last_alloc_size * 3 / 2, last_use_size + n), _capcity);
-    T* new_data = reinterpret_cast<T*>(realloc(_data, sizeof(T) * alloc_size));
+    T* new_data = reinterpret_cast<T*>(
+        (_data == nullptr) ? malloc(sizeof(T) * alloc_size)
+                           : realloc(_data, sizeof(T) * alloc_size));
     if (new_data == nullptr && alloc_size > last_use_size + n) {
       alloc_size = last_use_size + n;
-      new_data = reinterpret_cast<T*>(realloc(_data, sizeof(T) * alloc_size));
+      new_data = reinterpret_cast<T*>(
+          (_data == nullptr) ? malloc(sizeof(T) * alloc_size)
+                             : realloc(_data, sizeof(T) * alloc_size));
     }
 
     if (new_data == nullptr) {
@@ -105,11 +107,29 @@ struct array final {
     _alloc_size = alloc_size;
     _data = new_data;
 
-    _use_size += n;
-
     for (uint64_t i = 0; i < n; ++i) {
       new (_data + i + last_use_size) T();
     }
+
+    return 0;
+  }
+
+  int alloc_n(uint64_t n) {
+    if (unlikely(n > _capcity - _alloc_size)) {
+      return -1;
+    }
+
+    uint64_t alloc_size = _use_size + n;
+    T* new_data = reinterpret_cast<T*>(
+        (_data == nullptr) ? malloc(sizeof(T) * alloc_size)
+                           : realloc(_data, sizeof(T) * alloc_size));
+
+    if (new_data == nullptr) {
+      return -1;
+    }
+
+    _alloc_size = alloc_size;
+    _data = new_data;
 
     return 0;
   }
@@ -187,7 +207,7 @@ struct array final {
   T* _data;
   uint64_t _alloc_size;
   uint64_t _use_size;
-};  // struct array
+};  // namespace sun::data_structure
 
 }  // namespace sun::data_structure
 
