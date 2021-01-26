@@ -12,6 +12,8 @@
 #include <condition_variable>
 #include <mutex>
 
+enum class future_status { ready = 1, timeout, deferred };
+
 class shared_state_base {
  private:
   std::atomic<uint64_t> use_count_{0};

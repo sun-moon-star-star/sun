@@ -51,4 +51,17 @@ cc_library(
 cc_library(
     name = "decorator",
     hdrs = ["decorator.h"],
+    deps = [
+        "//sun/data_structure:array",
+    ],
+)
+
+
+cc_test(
+    name = "decorator_test",
+    srcs = ["decorator_test.cc"],
+    deps = [
+        ":decorator",
+        ":common",
+    ],
 )
