@@ -16,6 +16,7 @@ int main() {
   struct logger : public sun::util::decorator {
     logger(const std::string& str) : str(str) {}
     logger(std::string&& str) : str(std::move(str)) {}
+    logger(const logger& other) : str(other.str) {}
 
     virtual void execute() override { std::cout << str << std::endl; }
     std::string str;
@@ -23,6 +24,10 @@ int main() {
 
   struct timer : public sun::util::decorator {
     timer() { gettimeofday(&lifetime_start, nullptr); }
+
+    timer(const timer& other)
+        : lifetime_start(other.lifetime_start),
+          lifetime_end(other.lifetime_end) {}
 
     virtual void execute() override {
       sleep(1000);

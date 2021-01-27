@@ -19,22 +19,26 @@ struct decorator {
   virtual ~decorator() {}
 };
 
-struct decorator_link {
+struct decorator_link : public decorator {
   decorator_link() {}
 
   explicit decorator_link(std::initializer_list<decorator> executors) {
     _executors.alloc_n(executors.size());
     for (auto& it : executors) {
-      _executors.push_back(it);
+      if (&it != this) {
+        _executors.push_back(it);
+      }
     }
   }
 
-  decorator_link& with(const decorator& executor) {
-    _executors.push_back(executor);
+  decorator& with(const decorator& executor) {
+    if (&executor != this) {
+      _executors.push_back(executor);
+    }
     return *this;
   }
 
-  virtual void execute() {
+  void execute() override {
     for (int i = 0; i < _executors.size(); ++i) {
       _executors[i].execute();
     }
