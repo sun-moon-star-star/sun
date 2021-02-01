@@ -78,9 +78,21 @@ static inline int conn_read(connection* conn, void* buf, size_t buf_len) {
   return conn->type->read(conn, buf, buf_len);
 }
 
+static inline void conn_close(connection* conn) { conn->type->close(conn); }
+
+static inline int conn_accept(connection* conn,
+                              connection_callback_func accept_handler) {
+  return conn->type->accept(conn, accept_handler);
+}
+
 static inline int conn_set_write_handler(connection* conn,
                                          connection_callback_func func) {
   return conn->type->set_write_handler(conn, func, 0);
+}
+
+static inline int conn_set_write_handler_with_barrier(
+    connection* conn, connection_callback_func func, int barrier) {
+  return conn->type->set_write_handler(conn, func, barrier);
 }
 
 /* Register a read handler, to be called when the connection is readable.
@@ -91,15 +103,46 @@ static inline int conn_set_read_handler(connection* conn,
   return conn->type->set_read_handler(conn, func);
 }
 
+static inline const char* conn_get_last_error(connection* conn) {
+  return conn->type->get_last_error(conn);
+}
+
 static inline int conn_blocking_connect(connection* conn, const char* addr,
                                         int port, long long timeout) {
   return conn->type->blocking_connect(conn, addr, port, timeout);
 }
 
-static inline int conn_accept(connection* conn,
-                              connection_callback_func accept_handler) {
-  return conn->type->accept(conn, accept_handler);
+static inline ssize_t conn_sync_write(connection* conn, char* ptr, ssize_t size,
+                                      long long timeout) {
+  return conn->type->sync_write(conn, ptr, size, timeout);
 }
+
+static inline ssize_t conn_sync_read(connection* conn, char* ptr, ssize_t size,
+                                     long long timeout) {
+  return conn->type->sync_read(conn, ptr, size, timeout);
+}
+
+static inline ssize_t conn_sync_readline(connection* conn, char* ptr,
+                                         ssize_t size, long long timeout) {
+  return conn->type->sync_readline(conn, ptr, size, timeout);
+}
+
+static inline int conn_get_type(connection* conn) {
+  return conn->type->get_type(conn);
+}
+
+connection* conn_create_socket();
+connection* conn_create_accepted_socket(int fd);
+
+connection* conn_create_tls();
+connection* conn_create_accepted_tls(int fd, int require_auth);
+
+void conn_set_private_data(connection* conn, void* data);
+void* conn_get_private_data(connection* conn);
+int conn_get_state(connection* conn);
+int conn_has_write_handler(connection* conn);
+int conn_has_read_handler(connection* conn);
+int conn_get_socket_error(connection* conn);
 
 int conn_block(connection* conn);
 int conn_non_block(connection* conn);
@@ -113,6 +156,10 @@ int conn_format_fd_addr(connection* conn, char* buf, size_t buf_len,
                         int fd_to_str_type);
 int conn_sock_name(connection* conn, char* ip, size_t ip_len, int* port);
 const char* conn_get_info(connection* conn, char* buf, size_t buf_len);
+
+std::string conn_tls_get_peer_cert(connection* conn);
+int tls_has_pending_data();
+int tls_process_pending_data();
 
 }  // namespace sun::net
 
