@@ -10,13 +10,13 @@
 
 namespace sun {
 
-struct request {
+struct request_data {
   uint64_t len;
   uint64_t alloc;
   char* data;
 };
 
-struct response {
+struct response_data {
   uint64_t len;
   uint64_t alloc;
   char* data;
@@ -24,8 +24,9 @@ struct response {
 
 // 调用外部依赖服务(包括存储)统一接口
 struct caller {
-  virtual void operator()(const request& req, response* const resp) = 0;
-  virtual void operator()(request&& req, response* const resp) = 0;
+  virtual void operator()(const request_data& req,
+                          response_data* const resp) = 0;
+  virtual void operator()(request_data&& req, response_data* const resp) = 0;
 };
 
 }  // namespace sun
