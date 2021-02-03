@@ -17,23 +17,19 @@ using filter_ptr = std::shared_ptr<filter>;
 class filter {
  public:
   static filter_ptr make_filter(const std::string& content) {
-    filter_ptr obj(new filter(content));
-    return obj;
+    return filter_ptr(new filter(content));
   }
 
   static filter_ptr make_filter(std::string&& content) {
-    filter_ptr obj(new filter(std::move(content)));
-    return obj;
+    return filter_ptr(new filter(std::move(content)));
   }
 
   static filter_ptr make_filter(const std::string& content, filter_ptr nxt) {
-    filter_ptr obj(new filter(content, nxt));
-    return obj;
+    return filter_ptr(new filter(content, nxt));
   }
 
   static filter_ptr make_filter(std::string&& content, filter_ptr nxt) {
-    filter_ptr obj(new filter(std::move(content), nxt));
-    return obj;
+    return filter_ptr(new filter(std::move(content), nxt));
   }
 
  private:
@@ -51,8 +47,7 @@ class filter {
 
  public:
   filter_ptr static link(const std::string& content, filter_ptr other) {
-    filter_ptr obj(new filter(content, other));
-    return obj;
+    return filter_ptr(new filter(content, other));
   }
 
   bool match(const std::string& text) const {
