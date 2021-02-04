@@ -1,6 +1,14 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
+    name = "count_down_latch",
+    hdrs = ["count_down_latch.h"],
+    deps = [
+        "//sun/util:common",
+    ],
+)
+
+cc_library(
     name = "spinlock",
     hdrs = ["spinlock.h"],
     srcs = ["spinlock.cc"],
