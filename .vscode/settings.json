@@ -80,7 +80,8 @@
         "stack": "cpp",
         "condition_variable": "cpp",
         "thread": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "list": "c"
     },
     "editor.formatOnType": true,
     "editor.formatOnSave": true,
