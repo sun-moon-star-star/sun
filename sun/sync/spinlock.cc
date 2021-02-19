@@ -9,6 +9,9 @@ namespace sun::sync {
 
 spinlock::spinlock() : _lock(false) {}
 
+// 自旋锁设计的时候需要考虑到，在持有锁的时候没有被调度出去
+// 使用内核的自旋锁
+
 void spinlock::lock() {
   bool expect = false;
   while (!_lock.compare_exchange_weak(expect, true)) {
