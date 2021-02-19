@@ -65,7 +65,7 @@ class skiplist final {
   /**
    * @brief 比较函数:
    * node不为空，且调用函数的返回值与key的比较不为false
-   * @param[in] node 比较的节点，霢�要判断节点是否为穄1�7
+   * @param[in] node 比较的节点，需要判断节点是否为空
    * @param[in] key 被比较的key
    */
   bool compare_node(node_type* node, const KeyType& key) const;
@@ -83,8 +83,8 @@ class skiplist final {
   void swap(skiplist* list);
 
   /**
-   * @brief 获取跳表的元素个敄1�7
-   * @param[out] 跳表的元素个敄1�7
+   * @brief 获取跳表的元素个数
+   * @param[out] 跳表的元素个数
    */
   uint32_t size() const;
 
@@ -115,7 +115,7 @@ class skiplist final {
 
   /**
    * @brief 遍历跳表中的元素
-   * @param[in] func 每个跳表节点的操作函敄1�7
+   * @param[in] func 每个跳表节点的操作函数
    * @param[in] reverse
    * 默认值为false，表示正向遍历，为true表示反向遍历
    */
