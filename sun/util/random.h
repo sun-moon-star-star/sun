@@ -5,6 +5,9 @@
 #ifndef SUN_UTIL_RANDOM_H_
 #define SUN_UTIL_RANDOM_H_
 
+#include <cstdint>
+#include <random>
+
 namespace sun::util::random {
 
 std::default_random_engine default_random_engine;

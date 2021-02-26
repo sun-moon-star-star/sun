@@ -5,6 +5,11 @@ cc_library(
     hdrs = ["common.h"],
 )
 
+cc_library(
+    name = "random",
+    hdrs = ["random.h"],
+)
+
 cc_test(
     name = "common_test",
     srcs = ["common_test.cc"],

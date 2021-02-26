@@ -7,7 +7,7 @@
 #define SUN_DATA_STRUCTURE_SKIPLIST_H_
 
 #include "sun/data_structure/comparator.h"  // sun::data_structure::less
-#include "sun/util/common.h"
+#include "sun/util/random.h"
 
 #include <cstdint>
 #include <functional>
@@ -21,13 +21,12 @@ namespace skiplist_space {
 const uint32_t MAX_LEVEL = 64;
 
 void init_random_engine_with_time() {
-  ::sun::util::common::random::init_random_engine_with_time();
+  ::sun::util::random::init_random_engine_with_time();
 }
 
 uint32_t random_level() {
   uint32_t level = 1;
-  while (level < MAX_LEVEL &&
-         (::sun::util::common::random::random<>() & 1) == 1) {
+  while (level < MAX_LEVEL && (::sun::util::random::random<>() & 1) == 1) {
     ++level;
   }
   return level;
@@ -41,9 +40,6 @@ struct skiplist_node {
   ValueType value;
   skiplist_node* pre;
   skiplist_node** forward;
-
-  skiplist_node(const skiplist_node&) = delete;
-  skiplist_node& operator=(const skiplist_node&) = delete;
 };
 
 template <typename KeyType, typename ValueType,
@@ -58,6 +54,10 @@ class skiplist final {
   skiplist(const skiplist& other);
 
   skiplist& operator=(const skiplist& other);
+
+  skiplist(skiplist&& other);
+
+  skiplist& operator=(skiplist&& other);
 
   ~skiplist();
 
@@ -147,6 +147,12 @@ skiplist<KeyType, ValueType, KeyCompareFunc>::skiplist(const skiplist& other)
 }
 
 template <typename KeyType, typename ValueType, typename KeyCompareFunc>
+skiplist<KeyType, ValueType, KeyCompareFunc>::skiplist(skiplist&& other)
+    : skiplist() {
+  this->swap(other);
+}
+
+template <typename KeyType, typename ValueType, typename KeyCompareFunc>
 skiplist<KeyType, ValueType, KeyCompareFunc>&
 skiplist<KeyType, ValueType, KeyCompareFunc>::operator=(const skiplist& other) {
   if (this == &other) {
@@ -156,6 +162,17 @@ skiplist<KeyType, ValueType, KeyCompareFunc>::operator=(const skiplist& other) {
   for (node_type* it = other._tail; it != other._head; it = it->pre) {
     insert(it->key, it->value);
   }
+  return *this;
+}
+
+template <typename KeyType, typename ValueType, typename KeyCompareFunc>
+skiplist<KeyType, ValueType, KeyCompareFunc>&
+skiplist<KeyType, ValueType, KeyCompareFunc>::operator=(skiplist&& other) {
+  if (this == &other) {
+    return *this;
+  }
+  clear();
+  this->swap(other);
   return *this;
 }
 
