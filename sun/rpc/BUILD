@@ -13,3 +13,17 @@ cc_test(
         "//sun/util:common",
     ],
 )
+
+cc_library(
+    name = "buffer",
+    hdrs = ["buffer.h"],
+)
+
+cc_test(
+    name = "buffer_test",
+    srcs = ["buffer_test.cc"],
+    deps = [
+        ":buffer",
+        "//sun/util:common",
+    ],
+)
